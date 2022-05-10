@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants/constants.dart';
 import 'package:latlong2/latlong.dart';
@@ -57,14 +58,24 @@ class HotelMapView extends StatelessWidget {
                       point: LatLng(latitude, longitude),
                       builder: (ctx) => Column(
                         children: [
-                          Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(AppBorderRadius.cardRadius .r)
-                              ),
-                              child: Padding(
-                            padding: REdgeInsets.all(Insets.large .r),
-                            child: Text(hotelData.address??''),
-                          )),
+                          InkWell(
+                            onTap: ()async{
+                              String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                              if (await canLaunch(googleUrl)) {
+                              await launch(googleUrl);
+                              } else {
+                              throw 'Could not open the map.';
+                              }
+                            },
+                            child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(AppBorderRadius.cardRadius .r)
+                                ),
+                                child: Padding(
+                              padding: REdgeInsets.all(Insets.large .r),
+                              child: Text(hotelData.address??''),
+                            )),
+                          ),
                           const Icon(
                             Icons.pin_drop,
                             color: Colors.red,
